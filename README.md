@@ -14,7 +14,7 @@ https://particeep-jonathan.netlify.app/
 
 git clone https://github.com/Redskinsjo/Particeep jonathanCarnos
 
-2. Naviguer vers le dossier
+2. Naviguer vers le dossier :
 
 cd jonathanCarnos/
 
