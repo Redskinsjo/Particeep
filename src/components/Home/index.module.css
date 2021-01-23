@@ -2,22 +2,21 @@
   background-color: #303841;
   padding: 20px 0;
   flex: 1;
+  position: relative;
 }
-.card {
-  width: 208px;
-  margin: 20px 10px !important;
+
+.renderMovies_container {
+  display: flex;
+  flex-wrap: wrap;
 }
-.trash {
-  cursor: pointer;
+.pagination_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.trash:hover {
-  color: rgb(201, 20, 20);
-}
-.like:hover {
-  color: blue;
-  cursor: pointer;
-}
-.dislike:hover {
-  color: rgb(201, 20, 20);
-  cursor: pointer;
+.effect {
+  position: absolute;
+  bottom: -1px;
+  right: 0;
+  width: calc(92vw / 2);
 }

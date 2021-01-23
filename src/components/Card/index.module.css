@@ -1,0 +1,28 @@
+.card {
+  width: 208px;
+  margin: 20px 10px !important;
+}
+.trash {
+  cursor: pointer;
+}
+.trash:hover {
+  color: rgb(201, 20, 20);
+}
+.like:hover {
+  color: blue;
+  cursor: pointer;
+}
+.dislike:hover {
+  color: rgb(201, 20, 20);
+  cursor: pointer;
+}
+
+.slider_container {
+  display: flex;
+  align-items: center;
+}
+.toggle_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

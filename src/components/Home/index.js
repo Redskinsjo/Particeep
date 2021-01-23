@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import css from "./index.module.css";
 import Layout from "../shared/Layout/index";
+import MovieCard from "../Card/index";
+import RecursiveText from "../RecursiveText/index";
+import Dechire from "../../assets/img/dechire.svg";
 import { movies$ } from "../../assets/data/movies.js";
 import "antd/dist/antd.css";
-import { Card, message, Modal, Slider, Select, Pagination } from "antd";
+import { message, Modal, Select, Pagination } from "antd";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faMinusSquare,
@@ -12,7 +15,6 @@ import {
   faSmile,
   faFrown,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 library.add(faMinusSquare, faThumbsUp, faThumbsDown, faSmile, faFrown);
 
 const { confirm } = Modal;
@@ -25,16 +27,20 @@ const layoutStyles = {
 };
 
 const Home = () => {
+  // movies state stocks all the data
   const [movies, setMovies] = useState();
+  // filteredMovies state serves to process the data w/o losing the count of all the data
   const [filteredMovies, setFilteredMovies] = useState();
+  // displayedMovies state is actually the list of elements to display on the screen
   const [displayedMovies, setDisplayedMovies] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  // isLiked state stocks the movies that were liked by the user
   const [isLiked, setIsLiked] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  // categories state tracks dynamically the available filters
   const [categories, setCategories] = useState([]);
-  const [pageSize, setPageSize] = useState();
-  const [currentPage, setCurrentPage] = useState();
-
-  console.log(movies);
+  // for pagination
+  const [pageSize, setPageSize] = useState(12);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // set the movies to be displayed conditionnaly to the pagination
   const handlePageChange = (page, pageSize) => {
@@ -72,16 +78,18 @@ const Home = () => {
         setDisplayedMovies(displayedMovies);
       }
     } else {
-      const filteredMovies = movies.filter((movie) => {
+      const filterMovies = movies.filter((movie) => {
         return movie.category.toLowerCase() === value.toLowerCase();
       });
-      setFilteredMovies(filteredMovies);
+      setFilteredMovies(filterMovies);
       if (currentPage === 1) {
-        const displayedMovies = filteredMovies.slice(0, pageSize);
+        const displayedMovies = filterMovies.slice(0, pageSize);
+
         setDisplayedMovies(displayedMovies);
       } else {
         const skip = (currentPage - 1) * pageSize;
-        const displayedMovies = filteredMovies.slice(skip, skip + pageSize);
+        const displayedMovies = filterMovies.slice(skip, skip + pageSize);
+
         setDisplayedMovies(displayedMovies);
       }
     }
@@ -140,89 +148,23 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (movies) updateCategories(movies);
+    if (movies) {
+      updateCategories(movies);
+      setDisplayedMovies(movies);
+    }
   }, [movies]);
 
   let renderMovies;
   if (!isLoading) {
     renderMovies = displayedMovies.map((movie) => {
       return (
-        // Card component from ant design
-        <Card
+        <MovieCard
+          movie={movie}
+          showConfirm={showConfirm}
+          isLiked={isLiked}
+          setIsLiked={setIsLiked}
           key={movie.id}
-          title={movie.title}
-          headStyle={{ fontWeight: "bold" }}
-          extra={
-            <FontAwesomeIcon
-              icon={["fas", "minus-square"]}
-              className={css.trash}
-              onClick={() => {
-                showConfirm(movie.id);
-              }}
-            />
-          }
-          className={css.card}
-          style={
-            isLiked.includes(movie.id)
-              ? { backgroundColor: "rgb(170, 170, 255)" }
-              : null
-          }
-        >
-          {/* Content of the card */}
-          <p>{movie.category}</p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            {/* Toggle like/dislike the card */}
-            {!isLiked.includes(movie.id) ? (
-              <FontAwesomeIcon
-                icon={["fas", "thumbs-up"]}
-                className={css.like}
-                onClick={() => {
-                  const likes = [...isLiked, movie.id];
-                  setIsLiked(likes);
-                  movie.likes = movie.likes + 1;
-                }}
-              />
-            ) : (
-              <FontAwesomeIcon
-                icon={["fas", "thumbs-down"]}
-                className={css.dislike}
-                onClick={() => {
-                  const likes = isLiked.filter((like) => like !== movie.id);
-                  setIsLiked(likes);
-                  movie.likes = movie.likes - 1;
-                }}
-              />
-            )}
-
-            {/* Slider Measure of likes against dislikes */}
-            <div style={{ width: 115, display: "flex", alignItems: "center" }}>
-              <span style={{ fontSize: 10 }}>{movie.likes}</span>
-
-              <FontAwesomeIcon
-                icon={["fas", "smile"]}
-                style={{ marginLeft: 5 }}
-              />
-              <div style={{ width: "80%" }}>
-                <Slider
-                  value={movie.likes}
-                  disabled={true}
-                  max={movie.dislikes + movie.likes}
-                />
-              </div>
-              <FontAwesomeIcon
-                icon={["fas", "frown"]}
-                style={{ marginRight: 5 }}
-              />
-              <span style={{ fontSize: 10 }}>{movie.dislikes}</span>
-            </div>
-          </div>
-        </Card>
+        />
       );
     });
   }
@@ -235,7 +177,13 @@ const Home = () => {
             flexGrow: 1,
           }}
         >
-          <div style={{ marginLeft: 10 }}>
+          <div
+            style={{
+              marginLeft: 10,
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
             {!isLoading && (
               <Select
                 defaultValue="select a category"
@@ -245,19 +193,15 @@ const Home = () => {
                 {renderFilters}
               </Select>
             )}
+            <div style={{ width: 250, display: "flex", alignItems: "center" }}>
+              {!isLoading && <RecursiveText />}
+            </div>
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", marginTop: 35 }}>
+          <div className={css.renderMovies_container} style={{ marginTop: 35 }}>
             {renderMovies}
           </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 30,
-          }}
-        >
+        <div className={css.pagination_container} style={{ marginTop: 30 }}>
           <Pagination
             current={currentPage || 1}
             pageSizeOptions={[4, 8, 12]}
@@ -272,6 +216,7 @@ const Home = () => {
           ></Pagination>
         </div>
       </Layout>
+      <img src={Dechire} alt="torn effect" className={css.effect} />
     </div>
   );
 };
