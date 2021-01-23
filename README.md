@@ -6,6 +6,7 @@ https://particeep-jonathan.netlify.app/
 
 - React
 - Ant Design
+- FontAwesome
 
 ## Pour démarrer
 
