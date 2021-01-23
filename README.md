@@ -14,11 +14,15 @@ https://particeep-jonathan.netlify.app/
 
 git clone https://github.com/Redskinsjo/Particeep jonathanCarnos
 
-2. Installer les dépendances avec :
+2. Naviguer vers le dossier
+
+cd jonathanCarnos/
+
+3. Installer les dépendances avec :
 
 yarn install
 
-3. Développer le projet en local avec :
+4. Développer le projet en local avec :
 
 yarn start
 
