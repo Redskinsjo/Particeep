@@ -4,7 +4,7 @@ https://particeep-jonathan.netlify.app/
 
 ## Librairies utilisées
 
-- React
+- Create-react-app
 - Ant Design
 - FontAwesome
 
