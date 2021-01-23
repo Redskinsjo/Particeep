@@ -26,38 +26,68 @@ const layoutStyles = {
 
 const Home = () => {
   const [movies, setMovies] = useState();
+  const [filteredMovies, setFilteredMovies] = useState();
+  const [displayedMovies, setDisplayedMovies] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [isLiked, setIsLiked] = useState([]);
   const [categories, setCategories] = useState([]);
   const [pageSize, setPageSize] = useState();
   const [currentPage, setCurrentPage] = useState();
 
+  console.log(movies);
+
+  // set the movies to be displayed conditionnaly to the pagination
   const handlePageChange = (page, pageSize) => {
-    if (page === 1) {
-      movies$.then((data) => {
-        const moviesDisplayed = data.slice(0, pageSize);
-        setMovies(moviesDisplayed);
-      });
+    if (!filteredMovies) {
+      if (page === 1) {
+        const displayedMovies = movies.slice(0, pageSize);
+        setDisplayedMovies(displayedMovies);
+      } else {
+        const skip = (page - 1) * pageSize;
+        const displayedMovies = movies.slice(skip, skip + pageSize);
+        setDisplayedMovies(displayedMovies);
+      }
     } else {
-      const skip = (page - 1) * pageSize;
-      movies$.then((data) => {
-        const moviesDisplayed = data.slice(skip, skip + pageSize);
-        setMovies(moviesDisplayed);
-      });
+      if (page === 1) {
+        const displayedMovies = filteredMovies.slice(0, pageSize);
+        setDisplayedMovies(displayedMovies);
+      } else {
+        const skip = (page - 1) * pageSize;
+        const displayedMovies = filteredMovies.slice(skip, skip + pageSize);
+        setDisplayedMovies(displayedMovies);
+      }
     }
   };
 
+  // set the movies to be displayed conditionnaly to the filters
   const handleFilterChange = (value) => {
     if (value === "all categories") {
-      return fetchData();
+      setFilteredMovies(movies);
+      if (currentPage === 1) {
+        const displayedMovies = movies.slice(0, pageSize);
+        setDisplayedMovies(displayedMovies);
+      } else {
+        const skip = (currentPage - 1) * pageSize;
+        const displayedMovies = movies.slice(skip, skip + pageSize);
+        setDisplayedMovies(displayedMovies);
+      }
     } else {
       const filteredMovies = movies.filter((movie) => {
         return movie.category.toLowerCase() === value.toLowerCase();
       });
-      setMovies(filteredMovies);
+      setFilteredMovies(filteredMovies);
+      if (currentPage === 1) {
+        const displayedMovies = filteredMovies.slice(0, pageSize);
+        setDisplayedMovies(displayedMovies);
+      } else {
+        const skip = (currentPage - 1) * pageSize;
+        const displayedMovies = filteredMovies.slice(skip, skip + pageSize);
+        setDisplayedMovies(displayedMovies);
+      }
     }
   };
 
+  // Create the DOM list of filter options
   let renderFilters;
   if (!isLoading) {
     renderFilters = categories.map((category, index) => {
@@ -69,6 +99,7 @@ const Home = () => {
     });
   }
 
+  // Manage the list of categories from the movies available
   const updateCategories = (movies) => {
     let categories = [];
     const copy = [...movies];
@@ -100,6 +131,7 @@ const Home = () => {
   const fetchData = () => {
     movies$.then((data) => {
       setMovies(data);
+      setDisplayedMovies(data);
     });
   };
 
@@ -113,7 +145,7 @@ const Home = () => {
 
   let renderMovies;
   if (!isLoading) {
-    renderMovies = movies.map((movie) => {
+    renderMovies = displayedMovies.map((movie) => {
       return (
         // Card component from ant design
         <Card
@@ -153,6 +185,7 @@ const Home = () => {
                 onClick={() => {
                   const likes = [...isLiked, movie.id];
                   setIsLiked(likes);
+                  movie.likes = movie.likes + 1;
                 }}
               />
             ) : (
@@ -162,6 +195,7 @@ const Home = () => {
                 onClick={() => {
                   const likes = isLiked.filter((like) => like !== movie.id);
                   setIsLiked(likes);
+                  movie.likes = movie.likes - 1;
                 }}
               />
             )}
@@ -212,7 +246,7 @@ const Home = () => {
               </Select>
             )}
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", marginTop: 35 }}>
             {renderMovies}
           </div>
         </div>
@@ -228,7 +262,7 @@ const Home = () => {
             current={currentPage || 1}
             pageSizeOptions={[4, 8, 12]}
             pageSize={pageSize || 12}
-            total={12}
+            total={filteredMovies ? filteredMovies.length : movies?.length}
             showSizeChanger={true}
             onChange={(page, pageSize) => {
               setCurrentPage(page);
