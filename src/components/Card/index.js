@@ -41,11 +41,13 @@ const MovieCard = ({ movie, showConfirm, isLiked, setIsLiked }) => {
       }
     >
       {/* Content of the card */}
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <p>{movie.category}</p>
-        <span ref={plusOneLikeElem} style={{ fontSize: 14 }}></span>
-      </div>
-      <div className={css.toggle_container}>
         {/* Toggle like/dislike the card */}
         {!isLiked.includes(movie.id) ? (
           <FontAwesomeIcon
@@ -69,10 +71,16 @@ const MovieCard = ({ movie, showConfirm, isLiked, setIsLiked }) => {
             }}
           />
         )}
+      </div>
+      <div className={css.likes_dislikes_container}>
+        <span
+          ref={plusOneLikeElem}
+          style={{ fontSize: 14, verticalAlign: "middle" }}
+        ></span>
 
         {/* Slider Measure of likes against dislikes */}
         <div className={css.slider_container} style={{ width: 120 }}>
-          <span ref={likeElem} style={{ fontSize: 10 }}>
+          <span ref={likeElem} style={{ fontSize: 10, width: "9px" }}>
             {movie.likes}
           </span>
 

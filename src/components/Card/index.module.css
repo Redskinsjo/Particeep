@@ -21,7 +21,7 @@
   display: flex;
   align-items: center;
 }
-.toggle_container {
+.likes_dislikes_container {
   display: flex;
   justify-content: space-between;
   align-items: center;
