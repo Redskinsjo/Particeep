@@ -1,0 +1,23 @@
+.container {
+  background-color: #303841;
+  padding: 20px 0;
+  flex: 1;
+}
+.card {
+  width: calc(100% / 4 - 20px);
+  margin: 20px 10px !important;
+}
+.trash {
+  cursor: pointer;
+}
+.trash:hover {
+  color: rgb(201, 20, 20);
+}
+.like:hover {
+  color: blue;
+  cursor: pointer;
+}
+.dislike:hover {
+  color: rgb(201, 20, 20);
+  cursor: pointer;
+}

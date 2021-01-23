@@ -1,0 +1,19 @@
+.container {
+  height: 109px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tech {
+  font-weight: bold;
+}
+.myProfile {
+  text-decoration: none;
+  color: #303841;
+  width: 30px;
+}
+.myProfile:hover {
+  color: blue;
+  font-weight: bold;
+}
